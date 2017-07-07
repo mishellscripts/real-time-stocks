@@ -20,10 +20,15 @@
 
     app.controller('StockController', ['$scope',
         ($scope)=> {
-            $scope.products = stocks;
+            $scope.stocks = stocks;
         }
     ]);
 
-
+    app.directive('stockDescription', function() {
+        return {  
+            restrict: 'E',
+            templateUrl: 'stock-description.html'
+        };
+    });
 
 })();

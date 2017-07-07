@@ -11,14 +11,21 @@ html(ng-app='stocks')
 			nav
 				h2 Title
 				a(href='#')
-					i(class='fa fa-github' aria-hidden='true')
+					i(class='fa fa-github', aria-hidden='true')
 					| View source code
 		.container
-			div(class='stock col-md-3' ng-repeat='product in products')
-				h1 {{ product.name }}
-				h2 {{ product.price | currency}}
-				h3 {{ product.description }}
-				button(class='btn btn-default' ng-show='product.canPurchase') Purchase
+			div.filler.col-md-12
+			div#new-stock.col-md-3
+				h2 Enter Ticker Symbol
+				form#stock-form(action='' method='POST')
+					input#stock-ticker(type='text', name='ticker')
+					button.btn.btn-default#new-stock-button(type='submit') Add
+			div.stock.col-md-3(ng-repeat='stock in stocks', ng-init='showStock = true', ng-show='showStock')
+				a(href='#', ng-click='showStock = false') X
+				h1 {{ stock.name }}
+				h2 {{ stock.price | currency}}
+				h3 {{ stock.description }}
+				button.btn.btn-default(ng-show='stock.canPurchase') Purchase
 	script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js', integrity='sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f', crossorigin='anonymous')
 	script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js', integrity='sha384-cpKecN+57XiRigFOiAFZF5lV7jvI/DJ8YioJ1lHlAavT7PTOcwd6LmoaDabaos5N' crossorigin='anonymous')
 	script(type='text/javascript', src='js/main.js')

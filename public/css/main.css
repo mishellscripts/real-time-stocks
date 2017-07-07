@@ -1,11 +1,16 @@
 /****** General styling *****/
+html {
+    height: 100%;
+}
+
 body {
     background-color: #524656;
     color: #000000;
     font-family: 'Open Sans', sans-serif;
+    min-height: 100%;
 }
 
-nav {
+nav, .filler {
     height: 30px;
     background-color: rgba(0,0,0,0.1);   
 }
@@ -32,10 +37,15 @@ nav a {
 
 
 /****** Stock information ******/
-.stock {
+.stock, #new-stock {
     background-color: #ffffff;
     border-left: 10px solid #000000;
     margin: 10px;
+    height: 200px;
 }
 
 /******  Chart ******/
+.filler {
+    height: 400px;
+    margin: 10px 0px;
+}
