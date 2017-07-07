@@ -1,3 +1,41 @@
-h1 {
-    color: red;
+/****** General styling *****/
+body {
+    background-color: #524656;
+    color: #000000;
+    font-family: 'Open Sans', sans-serif;
 }
+
+nav {
+    height: 30px;
+    background-color: rgba(0,0,0,0.1);   
+}
+
+a, a:active, a:visited, a:hover, nav h1 {
+    color: #E5DDCB;
+    text-decoration: none;
+}
+
+a:hover {
+    color: rgba(255,255,255,0.5);
+}
+
+nav h2 {
+    float: left;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+nav a {
+    float: right;
+}
+
+
+/****** Stock information ******/
+.stock {
+    background-color: #ffffff;
+    border-left: 10px solid #000000;
+    margin: 10px;
+}
+
+/******  Chart ******/
