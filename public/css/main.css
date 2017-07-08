@@ -11,13 +11,21 @@ body {
 }
 
 nav, .filler {
-    height: 30px;
+    height: 40px;
     background-color: rgba(0,0,0,0.1);   
 }
 
-a, a:active, a:visited, a:hover, nav h1 {
+a, a:active, a:visited, a:hover, nav h2 {
     color: #E5DDCB;
     text-decoration: none;
+}
+
+a {
+    font-size: 1.2em;
+}
+
+a > i {
+   margin-right: 10px;
 }
 
 a:hover {
@@ -26,7 +34,7 @@ a:hover {
 
 nav h2 {
     float: left;
-    letter-spacing: 2px;
+    letter-spacing: 5px;
     text-transform: uppercase;
     margin: 0;
 }
@@ -40,12 +48,13 @@ nav a {
 .stock, #new-stock {
     background-color: #ffffff;
     border-left: 10px solid #000000;
-    margin: 10px;
-    height: 200px;
+    height: 150px;
+    margin: 5px 0px;
 }
+
 
 /******  Chart ******/
 .filler {
     height: 400px;
-    margin: 10px 0px;
+    margin: 20px 0px;
 }
