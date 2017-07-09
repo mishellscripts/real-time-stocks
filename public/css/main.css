@@ -50,6 +50,18 @@ nav a {
     border-left: 10px solid #000000;
     height: 150px;
     margin: 5px 0px;
+
+}
+
+#new-stock input, button {
+    height: 40px;
+}
+
+#new-stock button {
+    border-radius: 0px;
+    position: relative;
+    top: -1.5px;
+    left: -1px;
 }
 
 

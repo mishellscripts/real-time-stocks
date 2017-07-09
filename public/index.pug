@@ -1,10 +1,10 @@
 doctype html
 html(ng-app='stocks')
 	head
-		title Stockit
+		title Stocks
 		link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u', crossorigin='anonymous')
 		link(href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css', rel='stylesheet', integrity='sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN', crossorigin='anonymous')
-		link(href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet')
+		link(href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet')
 		link(href='css/main.css', rel='stylesheet', type='text/css')
 if body
 	body
@@ -12,7 +12,7 @@ else
 	body(ng-controller='StockController')
 		header
 			nav
-				h2 Stockit
+				h2 Stocks
 				a(href='#')
 					i(class='fa fa-github', aria-hidden='true')
 					| View source code
@@ -23,10 +23,11 @@ else
 				form#stock-form(ng-submit='addCompany()')
 					input#stock-ticker(type='text', name='ticker', ng-model='tickerSymbol')
 					button.btn.btn-default#new-stock-button(type='submit') Add
-			div#stocks-list(ng-show='companySymbols.length')
-				div.stock.col-md-3(ng-repeat='company in companySymbols')
+			div#stocks-list(ng-show='companies.length')
+				div.stock.col-md-3(ng-repeat='company in companies')
 					a(href='#', ng-click='removeCompany(company)') X
-					h1 {{ company }}
+					h1 {{ company.ticker_symbol }}
+					p {{ company.name }}
 	script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js', integrity='sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f', crossorigin='anonymous')
 	script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js', integrity='sha384-cpKecN+57XiRigFOiAFZF5lV7jvI/DJ8YioJ1lHlAavT7PTOcwd6LmoaDabaos5N' crossorigin='anonymous')
 	script(src='https://code.highcharts.com/highcharts.js')

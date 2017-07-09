@@ -44,3 +44,8 @@ app.use(express.static('public'));
 app.listen(port, ()=> console.log("yay!"));
 */
 
+app.get("/rest/getenv", function(req, res) {
+    var env = process.env.QUANDL_API_KEY;
+    res.json({result: env});
+});
+
