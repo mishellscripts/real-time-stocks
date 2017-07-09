@@ -2,6 +2,24 @@
 const express = require('express');
 const app = express();
 
+// Server connection
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+const port = process.env.PORT || 3000;
+
+//Whenever someone connects this gets executed
+io.on('connection', function(socket){
+  console.log('A user connected');
+
+  //Whenever someone disconnects this piece of code executed
+  socket.on('disconnect', function () {
+    console.log('A user disconnected');
+  });
+
+});
+
+server.listen(port);
+
 // Get and use package requirements
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -22,9 +40,7 @@ routes(app);
 app.set('views', __dirname + '/public');
 app.use(express.static('public'));
 
-// Listen to see if everything is working
-app.listen(process.env.PORT || 3000, ()=> {
-    console.log("yay!");
-})
-
+/* Listen to see if everything is working
+app.listen(port, ()=> console.log("yay!"));
+*/
 

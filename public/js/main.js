@@ -6,23 +6,25 @@
             $scope.newCompany = {};
             $scope.companyToRemove = {};
             $scope.tickerSymbol = '';
-            $scope.companies = [{
-                ticker_symbol: 'FB'
-            }];
+            $scope.companySymbols = ['FB'];
 
             $scope.addCompany = ()=> {
-                const newCompany = {
-                    ticker_symbol: $scope.tickerSymbol
-                }
-                if (!newCompany.ticker_symbol) return;
+                const newCompanySymbol = $scope.tickerSymbol;
+                if (!newCompanySymbol) return;
 
-                $scope.companies.push(newCompany);
-                //console.log($scope.companies);  
+                // Add company to array
+                $scope.companySymbols.push(newCompanySymbol);
+                //console.log($scope.companySymbols);
+
+                $.get('/api/' + newCompanySymbol, data =>{
+                    alert(data);
+                });        
             }
-            $scope.removeCompany = function(company) { 
-                const index = $scope.companies.indexOf(company);
-                $scope.companies.splice(index, 1); 
-                //console.log($scope.companies);    
+
+            $scope.removeCompany = companySymbol=> { 
+                const index = $scope.companySymbols.indexOf(companySymbol);
+                $scope.companySymbols.splice(index, 1); 
+                //console.log($scope.companySymbols);    
             }
         }
     ]);
@@ -39,3 +41,5 @@ $('#stock-form').submit(function(e){
         }
     });
 });
+
+var socket = io();
