@@ -16,14 +16,14 @@ html(ng-app='stocks')
 					i(class='fa fa-github', aria-hidden='true')
 					| View source code
 		.container
-			div.filler.col-md-12
-			div#new-stock.col-md-3
+			#chart.col-md-12
+			#new-stock.col-md-3
 				h2 Enter Ticker Symbol
 				form#stock-form(ng-submit='addCompany()')
 					input#stock-ticker(type='text', name='ticker', ng-model='tickerSymbol')
 					button.btn.btn-default#new-stock-button(type='submit') Add
-			div#stocks-list(ng-show='companies.length')
-				div.stock.col-md-3(class='company' ng-repeat='company in companies')
+			#stocks-list(ng-show='companies.length')
+				.stock.col-md-3(ng-repeat='company in companies')
 					p(ng-click='removeCompany(company)' class='close') X
 					h1 {{ company.ticker_symbol }}
 					p {{ company.name }}
@@ -32,4 +32,6 @@ html(ng-app='stocks')
 	script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.6.3/angular-animate.js')
 	script(src='https://code.highcharts.com/highcharts.js')
 	script(src='/socket.io/socket.io.js')
+	script(src='https://code.highcharts.com/modules/exporting.js')
+	script(type='text/javascript', src='js/dark-unica.js')
 	script(type='text/javascript', src='js/main.js')
