@@ -12,6 +12,11 @@
             $scope.tickerSymbol = '';
             $scope.companies = [];
 
+            // Initially plot data here
+            $scope.companies.forEach(company=> {
+
+            })
+
             $scope.addCompany = ()=> {
                 const newCompanySymbol = $scope.tickerSymbol;
                 // Exit out if no user input
@@ -21,15 +26,16 @@
                     ticker_symbol: newCompanySymbol.toUpperCase()
                 }
 
-                $http.get('https://www.quandl.com/api/v3/datasets/WIKI/' + newCompanySymbol + '.json?api_key=' + apiKey)
+                $http.get('https://www.quandl.com/api/v3/datasets/WIKI/' + newCompanySymbol + '.json?api_key=' + apiKey + '&start_date=01-01-2017')
                     .then(response=>{
                         newCompany.name = response.data.dataset.name;
                         // Compare objects works after removing $$hashkey property
                         if (angular.toJson($scope.companies).indexOf(angular.toJson(newCompany)) == -1) {
                             $scope.companies.push(newCompany);
                         }
-                        // Todo: Graph on chart
-                        plotChart(response.data.dataset.name, response.data.dataset.data);
+                        const data = processQuandlData(response.data.dataset.data);
+                        chart.addSeries({id: newCompanySymbol, data: data});
+
                         // Todo: If already exists, replace data in chart
                     }, err=> {
                         // If ticker symbol doesn't exist, display a message on the front end and exit out of addCompany function
@@ -41,7 +47,8 @@
 
             $scope.removeCompany = company=> { 
                 const index = $scope.companies.indexOf(company);
-                $scope.companies.splice(index, 1);    
+                $scope.companies.splice(index, 1);
+                chart.get(company.ticker_symbol).remove();  
             }
         }
     ]);
@@ -56,64 +63,57 @@ const displayError = message=> {
         });
 }
 
-const plotChart = (name, data)=> {
-    Highcharts.chart('chart', {
-        chart: {
-            zoomType: 'x'
+const processQuandlData = data=> {
+    let newData = [];
+    data.forEach(function(x, index) {
+        const date = new Date(x[0]).getTime();
+        var value = (x[1]+x[2]+x[3]+x[4])/4;
+        newData.push([date, value]);
+    });
+    return newData.reverse();
+}
+
+let chart = Highcharts.chart('chart', {
+    chart: {
+        type: 'spline'
+    },
+    title: {
+        text: 'Real time stock market trend data'
+    },
+    xAxis: {
+        type: 'datetime',
+        dateTimeLabelFormats: {
+            month: '%b',
+            year: '%b'
         },
         title: {
-            text: name
+            text: 'Date'
+        }
+    },
+    yAxis: {
+        title: {
+            text: 'Volume'
         },
-        subtitle: {
-            text: document.ontouchstart === undefined ?
-                    'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
-        },
-        xAxis: {
-            type: 'datetime'
-        },
-        yAxis: {
-            title: {
-                text: 'Volume'
+        min: 0
+    },
+    legend: {
+        enabled: false
+    },    
+    tooltip: {
+        headerFormat: '<b>{series.name}</b><br>',
+        pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
+    },
+    plotOptions: {
+        spline: {
+            marker: {
+                enabled: true
             }
-        },
-        legend: {
-            enabled: false
-        },
-        plotOptions: {
-            area: {
-                fillColor: {
-                    linearGradient: {
-                        x1: 0,
-                        y1: 0,
-                        x2: 0,
-                        y2: 1
-                    },
-                    stops: [
-                        [0, Highcharts.getOptions().colors[0]],
-                        [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-                    ]
-                },
-                marker: {
-                    radius: 2
-                },
-                lineWidth: 1,
-                states: {
-                    hover: {
-                        lineWidth: 1
-                    }
-                },
-                threshold: null
-            }
-        },
-
-        series: [{
-            type: 'area',
-            name: name,
-            data: data
-        }]
-    });
-};
-
-$('.company').fadeIn('slow');
+        }
+    },
+    credits: {
+        enabled: false
+    },    
+    series: []
+});
 
 var socket = io();
