@@ -35,15 +35,15 @@
 
                             chart.addSeries({id: newCompanySymbol, name: newCompanySymbol, data: companyData});
                             // Todo: If already exists, replace data in chart
+
+                            if (angular.toJson($scope.companies).indexOf(angular.toJson(newCompany)) == -1) {
+                                $scope.companies.push(newCompany);
+                                localStorage.setItem('companies', JSON.stringify($scope.companies));
+                            }
                         }, err=> {
                             // If ticker symbol doesn't exist, display a message on the front end and exit out of addCompany function
                             if (err.status === 404) displayError("Ticker symbol not found");
                         });
-
-                if (angular.toJson($scope.companies).indexOf(angular.toJson(newCompany)) == -1) {
-                    $scope.companies.push(newCompany);
-                    localStorage.setItem('companies', JSON.stringify($scope.companies));
-                }
 
                 $scope.tickerSymbol = '';
             }
