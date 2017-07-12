@@ -7,11 +7,10 @@ html(ng-app='stocks')
 		link(href='https://fonts.googleapis.com/css?family=Open+Sans:300', rel='stylesheet')
 		link(href='https://fonts.googleapis.com/css?family=Raleway', rel='stylesheet')
 		link(href='css/main.css', rel='stylesheet', type='text/css')
+		script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js', integrity='sha384-cpKecN+57XiRigFOiAFZF5lV7jvI/DJ8YioJ1lHlAavT7PTOcwd6LmoaDabaos5N' crossorigin='anonymous')
 	body(ng-controller='StockController')
 		header
 			nav
-				h2 
-					a(href='/') Stocks
 				a(href='https://github.com/mishellscripts/stocks')
 					i(class='fa fa-github', aria-hidden='true')
 					| View source code
@@ -21,15 +20,15 @@ html(ng-app='stocks')
 				h2 Enter Ticker Symbol
 				form#stock-form(ng-submit='addCompany()')
 					input#stock-ticker(type='text', name='ticker', ng-model='tickerSymbol')
-					button.btn.btn-default#new-stock-button(type='submit') Add
+					button.btn.btn-default#new-stock-button(type='submit' ng-click='saveData()') Add
 			#stocks-list(ng-show='companies.length')
-				.stock.col-md-3(ng-repeat='company in companies')
+				.stock.col-md-3(ng-repeat='company in companies track by $id($index)')
 					p(ng-click='removeCompany(company)' class='close') X
 					h1 {{ company.ticker_symbol }}
 					p {{ company.name }}
 	script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js', integrity='sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f', crossorigin='anonymous')
-	script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js', integrity='sha384-cpKecN+57XiRigFOiAFZF5lV7jvI/DJ8YioJ1lHlAavT7PTOcwd6LmoaDabaos5N' crossorigin='anonymous')
 	script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.6.3/angular-animate.js')
+	script(src='https://cdnjs.cloudflare.com/ajax/libs/angular-local-storage/0.6.0/angular-local-storage.min.js')
 	script(src='https://code.highcharts.com/highcharts.js')
 	script(src='/socket.io/socket.io.js')
 	script(type='text/javascript', src='js/dark-unica.js')
