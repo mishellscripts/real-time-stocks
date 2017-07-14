@@ -36,14 +36,16 @@ mongoose.Promise = global.Promise;
 
 // Get and use requirements that reside in application
 const routes = require('./app/routes/index.js');
-const secret = require('./app/routes/secret.js');
 routes(app);
-secret(app);
 app.set('views', __dirname + '/public');
 app.use(express.static('public'));
 
 /* Listen to see if everything is working
 app.listen(port, ()=> console.log("yay!"));
 */
+
+app.get(process.env.KEY, (req, res)=> {
+  res.json({key: process.env.QUANDL_API_KEY});
+});
 
 
