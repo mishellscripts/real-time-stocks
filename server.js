@@ -11,6 +11,8 @@ const port = process.env.PORT || 3000;
 io.on('connection', function(socket){
   console.log('A user connected');
 
+  socket.emit('key', process.env.QUANDL_API_KEY);
+
   //Whenever someone disconnects this piece of code executed
   socket.on('disconnect', function () {
     console.log('A user disconnected');
@@ -43,9 +45,4 @@ app.use(express.static('public'));
 /* Listen to see if everything is working
 app.listen(port, ()=> console.log("yay!"));
 */
-
-app.get(process.env.KEY, (req, res)=> {
-  res.json({key: process.env.QUANDL_API_KEY});
-});
-
 
