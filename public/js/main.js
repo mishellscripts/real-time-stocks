@@ -1,17 +1,10 @@
 (()=> {
     let app = angular.module('stocks', ['ngAnimate', 'LocalStorageModule']);
 
-    let apiKey = '';
-    // Get API key from the server
-    $.get('/rest/getenv', data=> {
-        apiKey = data.result;
-    })
-
     app.controller('StockController', ['$scope', '$http',
         ($scope, $http)=> {
             $scope.tickerSymbol = '';
             $scope.companies = JSON.parse(localStorage.getItem('companies')) || [];
-
             // Graph all of the companies from previous session
             $scope.companies.forEach(function(company) {
                 $http.get('https://www.quandl.com/api/v3/datasets/WIKI/' + company.ticker_symbol + '.json?api_key=' + apiKey + '&start_date=01-01-2017')
@@ -25,7 +18,7 @@
                 if (!newCompanySymbol) return;  // Exit out if no user input
 
                 const newCompany = {
-                    ticker_symbol: newCompanySymbol
+                    ticker_symbol: newCompanySymbol.toUpperCase()
                 }
                 $http.get('https://www.quandl.com/api/v3/datasets/WIKI/' + newCompanySymbol + '.json?api_key=' + apiKey + '&start_date=01-01-2017')
                         .then(response=>{
@@ -33,10 +26,8 @@
                             const companyData = processQuandlData(companyInfo.data);
                             newCompany.name = companyInfo.name;
 
-                            chart.addSeries({id: newCompanySymbol, name: newCompanySymbol, data: companyData});
-                            // Todo: If already exists, replace data in chart
-
                             if (angular.toJson($scope.companies).indexOf(angular.toJson(newCompany)) == -1) {
+                                 chart.addSeries({id: newCompanySymbol, name: newCompanySymbol, data: companyData});
                                 $scope.companies.push(newCompany);
                                 localStorage.setItem('companies', JSON.stringify($scope.companies));
                             }
@@ -57,6 +48,8 @@
         }
     ]);
 })();
+
+
 
 const displayError = message=> {
     $('#new-stock').append('<div class="error" style="display: none">' + message + '</div>');
@@ -121,5 +114,7 @@ let chart = Highcharts.chart('chart', {
     series: []
 });
 
-var socket = io();
+let socket = io();
 
+/*const colors = ['#2b908f', '#90ee7e', '#f45b5b', '#7798BF', '#aaeeee', '#ff0066', '#eeaaee',
+            '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'];*/

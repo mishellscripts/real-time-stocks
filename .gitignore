@@ -1,2 +1,4 @@
 node_modules/
 .env
+/app/routes/secret.js
+/public/js/api.js

@@ -23,7 +23,7 @@ html(ng-app='stocks')
 					input#stock-ticker(type='text', name='ticker', ng-model='tickerSymbol')
 					button.btn.btn-default#new-stock-button(type='submit' ng-click='saveData()') Add
 			#stocks-list(ng-show='companies.length')
-				.stock.col-md-3(ng-repeat='company in companies track by $id($index)')
+				.col-md-3.stock(ng-repeat='company in companies track by $id($index)')
 					p(ng-click='removeCompany(company)' class='close') X
 					h1 {{ company.ticker_symbol }}
 					p {{ company.name }}
@@ -32,4 +32,5 @@ html(ng-app='stocks')
 	script(src='https://code.highcharts.com/highcharts.js')
 	script(src='/socket.io/socket.io.js')
 	script(type='text/javascript', src='js/dark-unica.js')
+	script(type='text/javascript', src='js/api.js')
 	script(type='text/javascript', src='js/main.js')
