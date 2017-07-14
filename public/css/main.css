@@ -45,10 +45,19 @@ nav a {
 
 
 /****** Stock information ******/
-.stock, #new-stock {
-    background-color: #ffffff;
-    border-left: 10px solid #000000;
+.stock-container, #new-stock {
+    background-color: #ffffff;   
     height: 150px;
+}
+
+.stock-container {
+    padding: 0;
+}
+
+.stock {
+    border-left: 10px solid #000000;
+    height: 100%;
+    display: inline-block;
 }
 
 #new-stock input, button {

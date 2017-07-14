@@ -1,14 +1,25 @@
 (()=> {
     let app = angular.module('stocks', ['ngAnimate', 'LocalStorageModule']);
+    let nextColorIndex = 0;
 
     app.controller('StockController', ['$scope', '$http',
         ($scope, $http)=> {
             $scope.tickerSymbol = '';
             $scope.companies = JSON.parse(localStorage.getItem('companies')) || [];
+
+            $scope.setColor = company=> {
+                return {
+                    borderLeftColor: company.color
+                }
+            }
+
             // Graph all of the companies from previous session
-            $scope.companies.forEach(function(company) {
+            $scope.companies.forEach(company=> {
                 $http.get('https://www.quandl.com/api/v3/datasets/WIKI/' + company.ticker_symbol + '.json?api_key=' + apiKey + '&start_date=01-01-2017')
                     .then(response=> {
+                        company.color = colors[nextColorIndex];
+                        if (nextColorIndex == colors.length) nextColorIndex = 0;
+                        else nextColorIndex++;
                         chart.addSeries({id: company.ticker_symbol, name: company.ticker_symbol, data: processQuandlData(response.data.dataset.data)});
                     });
             });
@@ -18,8 +29,11 @@
                 if (!newCompanySymbol) return;  // Exit out if no user input
 
                 const newCompany = {
-                    ticker_symbol: newCompanySymbol.toUpperCase()
+                    ticker_symbol: newCompanySymbol.toUpperCase(),
+                    color: colors[nextColorIndex]
                 }
+                if (nextColorIndex == colors.length) nextColorIndex = 0;
+                else nextColorIndex++;
                 $http.get('https://www.quandl.com/api/v3/datasets/WIKI/' + newCompanySymbol + '.json?api_key=' + apiKey + '&start_date=01-01-2017')
                         .then(response=>{
                             const companyInfo = response.data.dataset;
@@ -64,7 +78,7 @@ const processQuandlData = data=> {
     let newData = [];
     data.forEach(function(x, index) {
         const date = new Date(x[0]).getTime();
-        var value = (x[1]+x[2]+x[3]+x[4])/4;
+        var value = (x[2]+x[3])/2;
         newData.push([date, value]);
     });
     return newData.reverse();
@@ -88,12 +102,6 @@ let chart = Highcharts.chart('chart', {
         },
         tickInterval: 30 * 24 * 3600 * 1000
     },
-    yAxis: {
-        title: {
-            text: 'Volume'
-        },
-        min: 0
-    },
     legend: {
         enabled: false
     },    
@@ -116,5 +124,5 @@ let chart = Highcharts.chart('chart', {
 
 let socket = io();
 
-/*const colors = ['#2b908f', '#90ee7e', '#f45b5b', '#7798BF', '#aaeeee', '#ff0066', '#eeaaee',
-            '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'];*/
+const colors = ['#2b908f', '#90ee7e', '#f45b5b', '#7798BF', '#aaeeee', '#ff0066', '#eeaaee',
+            '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'];

@@ -23,10 +23,11 @@ html(ng-app='stocks')
 					input#stock-ticker(type='text', name='ticker', ng-model='tickerSymbol')
 					button.btn.btn-default#new-stock-button(type='submit' ng-click='saveData()') Add
 			#stocks-list(ng-show='companies.length')
-				.col-md-3.stock(ng-repeat='company in companies track by $id($index)')
-					p(ng-click='removeCompany(company)' class='close') X
-					h1 {{ company.ticker_symbol }}
-					p {{ company.name }}
+				.col-md-3.stock-container(ng-repeat='company in companies track by $id($index)')
+					.stock(ng-style='setColor(company)')
+						p(ng-click='removeCompany(company)' class='close') X
+						h1 {{ company.ticker_symbol }}
+						p {{ company.name }}
 	script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js', integrity='sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f', crossorigin='anonymous')
 	script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.6.3/angular-animate.js')
 	script(src='https://code.highcharts.com/highcharts.js')
