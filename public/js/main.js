@@ -1,28 +1,37 @@
 (()=> {
-    let app = angular.module('stocks', ['ngAnimate', 'LocalStorageModule']);
+    let app = angular.module('stocks', ['ngAnimate']);
     let nextColorIndex = 0;
+
 
     app.controller('StockController', ['$scope', '$http',
         ($scope, $http)=> {
+            
             $scope.tickerSymbol = '';
-            $scope.companies = JSON.parse(localStorage.getItem('companies')) || [];
+            socket.on('getCompanies', companies=> {
+                $scope.companies = companies;
+                $scope.plot(companies);
+            });
 
             $scope.setColor = company=> {
                 return {
                     borderLeftColor: company.color
                 }
-            }
+            };
 
-            // Graph all of the companies from previous session
-            $scope.companies.forEach(company=> {
-                $http.get('https://www.quandl.com/api/v3/datasets/WIKI/' + company.ticker_symbol + '.json?api_key=' + apiKey + '&start_date=01-01-2017')
+            $scope.plot = companies=> {
+                // Graph all of the companies from previous session
+                companies.forEach(company=> {
+                $http.get('https://www.quandl.com/api/v3/datasets/WIKI/' + company.ticker_symbol 
+                    + '.json?api_key=' + apiKey + '&start_date=01-01-2017')
                     .then(response=> {
                         company.color = colors[nextColorIndex];
                         if (nextColorIndex == colors.length) nextColorIndex = 0;
                         else nextColorIndex++;
-                        chart.addSeries({id: company.ticker_symbol, name: company.ticker_symbol, data: processQuandlData(response.data.dataset.data)});
+                        chart.addSeries({id: company.ticker_symbol, name: company.ticker_symbol, 
+                            data: processQuandlData(response.data.dataset.data)});
                     });
-            });
+                });
+            };
 
             $scope.addCompany = ()=> {
                 const newCompanySymbol = $scope.tickerSymbol;
@@ -32,23 +41,26 @@
                     ticker_symbol: newCompanySymbol.toUpperCase(),
                     color: colors[nextColorIndex]
                 }
+
                 if (nextColorIndex == colors.length) nextColorIndex = 0;
                 else nextColorIndex++;
-                $http.get('https://www.quandl.com/api/v3/datasets/WIKI/' + newCompanySymbol + '.json?api_key=' + apiKey + '&start_date=01-01-2017')
-                        .then(response=>{
-                            const companyInfo = response.data.dataset;
-                            const companyData = processQuandlData(companyInfo.data);
-                            newCompany.name = companyInfo.name;
+                
+                $http.get('https://www.quandl.com/api/v3/datasets/WIKI/' + newCompanySymbol 
+                    + '.json?api_key=' + apiKey + '&start_date=01-01-2017')
+                    .then(response=>{
+                        const companyInfo = response.data.dataset;
+                        const companyData = processQuandlData(companyInfo.data);
+                        newCompany.name = companyInfo.name;
 
-                            if (angular.toJson($scope.companies).indexOf(angular.toJson(newCompany)) == -1) {
-                                 chart.addSeries({id: newCompanySymbol, name: newCompanySymbol, data: companyData});
-                                $scope.companies.push(newCompany);
-                                localStorage.setItem('companies', JSON.stringify($scope.companies));
-                            }
-                        }, err=> {
-                            // If ticker symbol doesn't exist, display a message on the front end and exit out of addCompany function
-                            if (err.status === 404) displayError("Ticker symbol not found");
-                        });
+                        if (angular.toJson($scope.companies).indexOf(angular.toJson(newCompany)) == -1) {
+                            chart.addSeries({id: newCompanySymbol, name: newCompanySymbol, data: companyData});
+                            $scope.companies.push(newCompany);
+                            socket.emit('addCompany', newCompany);
+                        }
+                    }, err=> {
+                        // If ticker symbol doesn't exist, display a message on the front end and exit out of addCompany function
+                        if (err.status === 404) displayError("Ticker symbol not found");
+                    });
 
                 $scope.tickerSymbol = '';
             }
@@ -57,7 +69,7 @@
                 const index = $scope.companies.indexOf(company);
                 $scope.companies.splice(index, 1);
                 chart.get(company.ticker_symbol).remove();
-                localStorage.setItem('companies', JSON.stringify($scope.companies));
+                socket.emit('removeCompany', company);
             }
         }
     ]);
@@ -124,9 +136,9 @@ let chart = Highcharts.chart('chart', {
 
 let socket = io();
 
-let apiKey = "";
-socket.on('key', function(key){
-    apiKey = key;
+let apiKey = '';
+socket.on('key', key=> {
+    apiKey =  key;
 });
 
 const colors = ['#2b908f', '#90ee7e', '#f45b5b', '#7798BF', '#aaeeee', '#ff0066', '#eeaaee',

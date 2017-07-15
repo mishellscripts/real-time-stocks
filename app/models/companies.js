@@ -5,8 +5,7 @@ const Schema = mongoose.Schema;
 
 const Company = new Schema({ 
     ticker_symbol: String,
-    name: String,
-    data_points: []
+    name: String
 });
 
 module.exports = mongoose.model('Company', Company);
