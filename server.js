@@ -16,14 +16,25 @@ io.on('connection', socket=>{
 
     socket.on('addCompany', company=> {
         var newCompany = new Company(company);
-        newCompany.save();
+        newCompany.save(err=> {
+            Company.find({}, (err, companies)=> {
+                socket.broadcast.emit('getCompanies',  companies)
+            });
+        });
+        
     });
 
     socket.on('removeCompany', company=> {
         Company.find({ticker_symbol: company.ticker_symbol}).remove(err=> {
           if (err) console.log(err);
-          else console.log('removed');
+          else { 
+            console.log('removed');
+            Company.find({}, (err, companies)=> {
+              socket.broadcast.emit('getCompanies',  companies)
+            });
+          }
         });
+                
     });
 
     Company.find({}, (err, companies)=> {
